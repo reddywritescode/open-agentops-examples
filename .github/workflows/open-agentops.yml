@@ -21,7 +21,7 @@ jobs:
           python -m pip install "git+https://github.com/reddywritescode/open-agentops.git@main"
       - name: Run customer support e2e
         run: |
-          bash customer-support/run_e2e.sh customer-support-e2e
+          PYTHON=python bash customer-support/run_e2e.sh customer-support-e2e
       - name: Upload Open AgentOps artifacts
         uses: actions/upload-artifact@v4
         if: always()
