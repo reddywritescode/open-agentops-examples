@@ -17,7 +17,7 @@ This repo is intentionally separate from the product repo. It shows how a normal
 
 ## Run Locally
 
-Install Open AgentOps from the product repo:
+Install Open AgentOps from the product repo. The GitHub Actions workflow does the same install from `main`:
 
 ```bash
 python -m pip install "git+https://github.com/reddywritescode/open-agentops.git"
