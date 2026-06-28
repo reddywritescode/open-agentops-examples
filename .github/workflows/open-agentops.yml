@@ -18,7 +18,7 @@ jobs:
       - name: Install Open AgentOps
         run: |
           python -m pip install --upgrade pip
-          python -m pip install "git+https://github.com/reddywritescode/open-agentops.git"
+          python -m pip install "git+https://github.com/reddywritescode/open-agentops.git@main"
       - name: Run customer support e2e
         run: |
           bash customer-support/run_e2e.sh customer-support-e2e
