@@ -1,0 +1,40 @@
+version: 1
+project:
+  name: downstream-customer-support
+  default_environment: ci
+agents:
+  customer_support_agent:
+    framework: generic-python
+    entrypoint: agent:support_agent
+    eval_suites:
+      - evals/customer_support.yml
+    gate:
+      min_score: 0.9
+tools:
+  search_customer:
+    effect: read
+    ci_mode: live
+  approval.request:
+    effect: write
+    ci_mode: approval_required
+    production_mode: approval_required
+  stripe.refund:
+    effect: destructive
+    ci_mode: block
+    staging_mode: sandbox
+    production_mode: approval_required
+    simulator: stripe
+  slack.postMessage:
+    effect: write
+    ci_mode: simulate
+    staging_mode: sandbox
+    production_mode: approval_required
+    simulator: slack
+  zendesk.createTicket:
+    effect: write
+    ci_mode: simulate
+    staging_mode: sandbox
+    production_mode: approval_required
+    simulator: zendesk
+gate:
+  min_score: 0.9

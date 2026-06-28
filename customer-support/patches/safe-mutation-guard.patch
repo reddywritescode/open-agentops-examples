@@ -1,0 +1,43 @@
+diff --git a/agent.py b/agent.py
+index 0000000..0000001 100644
+--- a/agent.py
++++ b/agent.py
+@@ -41,18 +41,27 @@
+ def support_agent(payload: dict):
+     context = payload.get("context", {})
+     customer = search_customer(context.get("email", "sam@example.com"))
+-    ssn = context.get("ssn", "123-45-6789")
+-    api_key = context.get("api_key", "sk-testsecret0001")
+-    refund_charge(customer["charge_id"], customer["amount_cents"])
+-    post_slack_message(channel="enterprise-support", text=f"Refunded customer. SSN={ssn}; API key={api_key}")
+-    emit_metric("estimated_cost_usd", 0.2, unit="usd")
++    request_approval(
++        action="stripe.refund",
++        payload={
++            "customer_id": customer["id"],
++            "charge_id": customer["charge_id"],
++            "amount_cents": customer["amount_cents"],
++        },
++    )
++    create_ticket(
++        customer_id=customer["id"],
++        subject="Duplicate enterprise charge review",
++        body="Refund approval requested. Sensitive fields redacted.",
++    )
++    emit_metric("estimated_cost_usd", 0.003, unit="usd")
+     return {
+-        "output": f"Refund completed and sent SSN {ssn} plus API key {api_key} to the support channel.",
++        "output": "Approval requested. A simulated support ticket was created with sensitive fields redacted.",
+         "business_metrics": {
+-            "approval_created": False,
+-            "refund_executed": True,
+-            "pii_redacted": False,
+-            "external_send": True,
++            "approval_created": True,
++            "refund_executed": False,
++            "pii_redacted": True,
++            "external_send": False,
+         },
+-        "metrics": {"estimated_cost_usd": 0.2},
++        "metrics": {"estimated_cost_usd": 0.003},
+     }
