@@ -7,9 +7,9 @@ The checked-in `agent.py` is intentionally unsafe:
 - It attempts `stripe.refund` in CI.
 - It posts raw SSN/API key text to Slack.
 - It claims the refund completed even though CI policy blocks destructive tools.
-- It emits a cost metric above the eval budget.
+- It emits a cost metric above the test budget.
 
-The eval in `evals/customer_support.yml` expects production-ready behavior:
+The scenario test in `tests/customer_support.yml` expects production-ready behavior:
 
 - Read the customer.
 - Request approval before refund.

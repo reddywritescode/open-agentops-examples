@@ -5,7 +5,7 @@ Runnable examples for [Open AgentOps](https://github.com/reddywritescode/open-ag
 This repo is intentionally separate from the product repo. It shows how a normal agent project adds:
 
 - `agentops.yml`
-- eval YAML
+- scenario test YAML
 - a CI workflow
 - exported reports and traces
 
@@ -29,4 +29,4 @@ Run the customer support example:
 bash customer-support/run_e2e.sh /tmp/open-agentops-customer-support-example
 ```
 
-The script creates a temporary copy, proves the unsafe agent fails, applies a safe patch, proves the patched agent passes, saves a baseline, compares it, and exports artifacts.
+The script creates a temporary copy, proves the unsafe scenario test fails, applies a safe patch, proves the patched agent passes, saves a baseline, compares it, and exports artifacts.

@@ -6,8 +6,8 @@ agents:
   customer_support_agent:
     framework: generic-python
     entrypoint: agent:support_agent
-    eval_suites:
-      - evals/customer_support.yml
+    test_suites:
+      - tests/customer_support.yml
     gate:
       min_score: 0.9
 tools:

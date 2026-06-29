@@ -21,10 +21,10 @@ SUMMARY="$WORKDIR/E2E_SUMMARY.md"
 mkdir -p "$INIT_DIR" "$PACKAGE_DIR"
 cp "$SCRIPT_DIR/agent.py" "$INIT_DIR/agent.py"
 
-echo "== First-run init creates config and starter eval =="
+echo "== First-run init creates config and starter scenario test =="
 "${OPEN_AGENTOPS[@]}" init "$INIT_DIR" --agent customer_support_agent --entrypoint agent:support_agent
 test -f "$INIT_DIR/agentops.yml"
-test -f "$INIT_DIR/evals/customer_support_agent.generated.yml"
+test -f "$INIT_DIR/tests/customer_support_agent.generated.yml"
 
 echo "== Copy customer support package =="
 cp -R "$SCRIPT_DIR"/. "$PACKAGE_DIR"/
@@ -45,15 +45,15 @@ echo "== Scan and validate customer package =="
 
 echo "== Unsafe candidate must fail =="
 set +e
-"${OPEN_AGENTOPS[@]}" eval run --config agentops.yml > .agentops/downstream-e2e/unsafe-eval.log 2>&1
+"${OPEN_AGENTOPS[@]}" test run --config agentops.yml > .agentops/downstream-e2e/unsafe-test.log 2>&1
 UNSAFE_EVAL_STATUS=$?
 "${OPEN_AGENTOPS[@]}" gate --config agentops.yml > .agentops/downstream-e2e/unsafe-gate.log 2>&1
 UNSAFE_GATE_STATUS=$?
 set -e
 
 if [ "$UNSAFE_EVAL_STATUS" -eq 0 ]; then
-  echo "Expected unsafe eval to fail, but it passed" >&2
-  cat .agentops/downstream-e2e/unsafe-eval.log >&2
+  echo "Expected unsafe test run to fail, but it passed" >&2
+  cat .agentops/downstream-e2e/unsafe-test.log >&2
   exit 1
 fi
 
@@ -71,12 +71,12 @@ git apply patches/safe-mutation-guard.patch
 git diff -- agent.py > .agentops/downstream-e2e/applied-safe.patch
 
 echo "== Patched candidate must pass =="
-"${OPEN_AGENTOPS[@]}" eval run --config agentops.yml
+"${OPEN_AGENTOPS[@]}" test run --config agentops.yml
 "${OPEN_AGENTOPS[@]}" gate --config agentops.yml
 "${OPEN_AGENTOPS[@]}" baseline save --config agentops.yml --name main
 
 echo "== Re-run patched candidate and compare baseline =="
-"${OPEN_AGENTOPS[@]}" eval run --config agentops.yml
+"${OPEN_AGENTOPS[@]}" test run --config agentops.yml
 "${OPEN_AGENTOPS[@]}" gate --config agentops.yml
 "${OPEN_AGENTOPS[@]}" baseline compare --config agentops.yml --name main --fail-on-regression
 
@@ -90,7 +90,7 @@ cat > "$SUMMARY" <<EOF
 
 - Workdir: \`$WORKDIR\`
 - First-run init: PASS
-- Unsafe eval status: \`$UNSAFE_EVAL_STATUS\`
+- Unsafe test status: \`$UNSAFE_EVAL_STATUS\`
 - Unsafe gate status: \`$UNSAFE_GATE_STATUS\`
 - Safe patch: PASS
 - Baseline compare: PASS
@@ -98,7 +98,7 @@ cat > "$SUMMARY" <<EOF
 
 Key files:
 
-- \`$PACKAGE_DIR/.agentops/downstream-e2e/unsafe-eval.log\`
+- \`$PACKAGE_DIR/.agentops/downstream-e2e/unsafe-test.log\`
 - \`$PACKAGE_DIR/.agentops/downstream-e2e/unsafe-gate.log\`
 - \`$PACKAGE_DIR/.agentops/downstream-e2e/applied-safe.patch\`
 - \`$ARTIFACT_DIR/report.md\`
